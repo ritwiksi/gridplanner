@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import type { Feature, FeatureCollection, Geometry } from 'geojson';
+import { searchPublicGIS } from './liveSearch';
 import {
   ArrowRight, ArrowUpRight, Check, CheckCircle2, ChevronRight, Database,
   Download, ExternalLink, Info, Layers, MapPin, RefreshCw, Search,
@@ -28,8 +29,8 @@ type SearchResponse = {
 };
 type SearchMode = 'sample' | 'live';
 const ALBANY: [number, number] = [42.6526, -73.7562];
-// GitHub Pages serves only the explicitly labeled, independently verified sample.
-const STATIC_DEMO = import.meta.env.BASE_URL !== '/' && !import.meta.env.VITE_API_URL;
+// On GitHub Pages, execute real screening in the browser against public GIS endpoints.
+const STATIC_LIVE = import.meta.env.BASE_URL !== '/' && !import.meta.env.VITE_API_URL;
 const LAND_PER_MW_AC = 7;
 
 function centroid(site: Site): [number, number] {
@@ -226,21 +227,27 @@ export default function App() {
   async function findSites() {
     setLoading(true); setError(''); setSelectedId(null); setStarted(true);
     try {
-      const url = (import.meta.env.VITE_API_URL as string | undefined) || '/api/search';
-      const response = await fetch(url, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          capacity_mw_ac: capacity, center_lat: center[0], center_lon: center[1],
-          radius_miles: radius,
-          minimum_acres: extraMin ? Number(extraMin) : null,
-        }),
-      });
-      if (!response.ok) {
-        let detail = 'The live GIS service could not complete this request.';
-        try { const failure = await response.json(); detail = failure.detail || detail; } catch { /* non-JSON response */ }
-        throw new Error(detail);
+      const payload = {
+        capacity_mw_ac: capacity, center_lat: center[0], center_lon: center[1],
+        radius_miles: radius, minimum_acres: extraMin ? Number(extraMin) : null,
+      };
+      let result: SearchResponse;
+      if (STATIC_LIVE) {
+        result = await searchPublicGIS(payload);
+      } else {
+        const url = (import.meta.env.VITE_API_URL as string | undefined) || '/api/search';
+        const response = await fetch(url, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) {
+          let detail = 'The live GIS service could not complete this request.';
+          try { const failure = await response.json(); detail = failure.detail || detail; }
+          catch { /* non-JSON response */ }
+          throw new Error(detail);
+        }
+        result = await response.json() as SearchResponse;
       }
-      const result = await response.json() as SearchResponse;
       if (result.type !== 'FeatureCollection' || !Array.isArray(result.features)) throw new Error('Unexpected live GIS response.');
       setSites(result.features); setMode('live'); setSummary(result.summary); setComparison([]);
       if (result.features.length && map.current) {
@@ -297,10 +304,13 @@ export default function App() {
       <div className="location-info"><MapPin size={15}/><div><strong>Albany County, NY</strong><small>Click anywhere on the map to move search center</small></div>
         <button className="icon-button" title="Reset search center to Albany" onClick={() => setCenter(ALBANY)}><RefreshCw size={15}/></button></div>
 
-      <button className="primary-action" disabled={loading || (STATIC_DEMO && sample.length === 0)} onClick={STATIC_DEMO ? useVerifiedSample : findSites}>
-        {loading ? <><span className="loader"/> Screening real parcels…</> : <><Search size={18}/> {STATIC_DEMO ? 'Screen verified sample' : 'Find sites'} <ArrowRight size={18} className="action-arrow"/></>}
+      <button className="primary-action" disabled={loading} onClick={findSites}>
+        {loading ? <><span className="loader"/> Screening real parcels…</> : <><Search size={18}/> 'Find live sites' <ArrowRight size={18} className="action-arrow"/></>}
       </button>
       <div className="project-footnote"><Info size={13}/> Initial screening only · Not an interconnection or permitting decision</div>
+      <button className="saved-sample-button" onClick={useVerifiedSample} disabled={loading || sample.length === 0}>
+        <Database size={13}/> Explore verified sample offline <ArrowUpRight size={13}/>
+      </button>
 
       <div className="results-header">
         <div className="results-title"><span>SEARCH RESULTS</span><span className="step-counter">02 / 02</span></div>
