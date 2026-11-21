@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   real-data-check:
@@ -32,13 +32,3 @@ jobs:
         with:
           name: gridseeker-real-gis-proof
           path: outputs/
-      - name: Cache verified public sample for offline demonstration
-        run: |
-          mkdir -p frontend/public/data
-          cp outputs/sample_candidates.geojson frontend/public/data/sample_candidates.geojson
-          cp outputs/go_no_go.json frontend/public/data/go_no_go.json
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add frontend/public/data
-          git diff --cached --quiet || git commit -m "data: preserve verified Albany GIS demonstration sample"
-          git push
