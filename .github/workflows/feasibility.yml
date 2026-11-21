@@ -2,7 +2,14 @@ name: Mandatory GIS feasibility (GO/NO-GO)
 on:
   push:
     branches: [feat/gridseeker-feasibility]
+    paths:
+      - 'scripts/go_no_go.py'
+      - 'requirements.txt'
+      - '.github/workflows/feasibility.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   real-data-check:
@@ -10,6 +17,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -19,8 +28,17 @@ jobs:
       - name: Execute real parcel and wetland spatial queries
         run: python scripts/go_no_go.py --min-acres 10 --check-count 25
       - name: Preserve actual verification outputs
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: gridseeker-real-gis-proof
           path: outputs/
+      - name: Cache verified public sample for offline demonstration
+        run: |
+          mkdir -p frontend/public/data
+          cp outputs/sample_candidates.geojson frontend/public/data/sample_candidates.geojson
+          cp outputs/go_no_go.json frontend/public/data/go_no_go.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data
+          git diff --cached --quiet || git commit -m "data: preserve verified Albany GIS demonstration sample"
+          git push
