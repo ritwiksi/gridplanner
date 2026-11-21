@@ -27,6 +27,7 @@ Requires Python 3.11+ and Node.js 20+.
 ```bash
 git clone https://github.com/ritwiksi/gridplanner.git
 cd gridplanner
+git switch feat/gridseeker-feasibility # Until pull request #1 is merged to main
 python -m venv .venv
 # Activate your venv first (Windows: .venv\\Scripts\\activate, macOS/Linux: source .venv/bin/activate)
 pip install -r requirements.txt
