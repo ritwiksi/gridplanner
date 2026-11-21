@@ -28,6 +28,8 @@ type SearchResponse = {
 };
 type SearchMode = 'sample' | 'live';
 const ALBANY: [number, number] = [42.6526, -73.7562];
+// GitHub Pages serves only the explicitly labeled, independently verified sample.
+const STATIC_DEMO = import.meta.env.BASE_URL !== '/' && !import.meta.env.VITE_API_URL;
 const LAND_PER_MW_AC = 7;
 
 function centroid(site: Site): [number, number] {
@@ -295,8 +297,8 @@ export default function App() {
       <div className="location-info"><MapPin size={15}/><div><strong>Albany County, NY</strong><small>Click anywhere on the map to move search center</small></div>
         <button className="icon-button" title="Reset search center to Albany" onClick={() => setCenter(ALBANY)}><RefreshCw size={15}/></button></div>
 
-      <button className="primary-action" disabled={loading} onClick={findSites}>
-        {loading ? <><span className="loader"/> Screening real parcels…</> : <><Search size={18}/> Find sites <ArrowRight size={18} className="action-arrow"/></>}
+      <button className="primary-action" disabled={loading || (STATIC_DEMO && sample.length === 0)} onClick={STATIC_DEMO ? useVerifiedSample : findSites}>
+        {loading ? <><span className="loader"/> Screening real parcels…</> : <><Search size={18}/> {STATIC_DEMO ? 'Screen verified sample' : 'Find sites'} <ArrowRight size={18} className="action-arrow"/></>}
       </button>
       <div className="project-footnote"><Info size={13}/> Initial screening only · Not an interconnection or permitting decision</div>
 
