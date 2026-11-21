@@ -28,7 +28,7 @@ jobs:
 
   frontend:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     defaults:
       run:
         working-directory: frontend
@@ -41,3 +41,18 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Type-check and bundle
         run: npm run build
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser-test complete search-to-assessment flow
+        run: npm run test:e2e
+        env:
+          CI: 'true'
+      - name: Preserve browser screenshot and traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gridseeker-browser-evidence
+          path: |
+            frontend/test-results/
+            frontend/playwright-report/
+          if-no-files-found: ignore
