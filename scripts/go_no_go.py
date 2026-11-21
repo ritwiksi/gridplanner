@@ -24,7 +24,8 @@ ACRE_M2 = 4046.8564224
 PROJECTED_CRS = "EPSG:26918"  # NAD83 / UTM zone 18N, metres
 
 def api_get(url, params):
-    r = (requests.post(url, data=params, timeout=40, headers={"User-Agent": "GridSeeker research prototype (source-attributed)"})\n         if url == WETLANDS else requests.get(url, params=params, timeout=40, headers={"User-Agent": "GridSeeker research prototype (source-attributed)"}))
+    r = (requests.post(url, data=params, timeout=40, headers={"User-Agent": "GridSeeker research prototype (source-attributed)"})
+         if url == WETLANDS else requests.get(url, params=params, timeout=40, headers={"User-Agent": "GridSeeker research prototype (source-attributed)"}))
     r.raise_for_status()
     data = r.json()
     if not isinstance(data, dict) or "error" in data:
