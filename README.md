@@ -44,7 +44,7 @@ npm run dev
 
 Open **http://localhost:5173**. Vite proxies `/api` to FastAPI at `http://127.0.0.1:8000`.
 
-For a **single-server deployment**, use the included Dockerfile. Alternatively, run `npm run build` inside `frontend`, then start `uvicorn backend.app:app --host 0.0.0.0 --port 8000`; FastAPI serves the compiled frontend from `frontend/dist`.
+**Public hosting:** `.github/workflows/deploy-pages.yml` automatically builds and publishes the live browser-based app to GitHub Pages after the repository owner enables **Settings → Pages → Source: GitHub Actions** once. It does not require Python hosting or a server-side secret. Publication has not been confirmed until the workflow finishes successfully.\n\nFor a **single-server deployment**, use the included Dockerfile. Alternatively, run `npm run build` inside `frontend`, then start `uvicorn backend.app:app --host 0.0.0.0 --port 8000`; FastAPI serves the compiled frontend from `frontend/dist`.
 
 ## Product workflow
 
@@ -60,11 +60,11 @@ If the live GIS query fails, the app **reports the failure**. It never silently 
 
 The frontend contains a reproducible **25-parcel proof snapshot**, including 4 parcels flagged for mapped wetland overlap. This is helpful if external GIS services fail during a demo.
 
-On local dev, the snapshot is initially visible and labeled **VERIFIED SAMPLE**; the Find sites button still requests fresh data. In a static GitHub Pages build (`GITHUB_PAGES=true npm run build`), the main button is labeled **Screen verified sample** and applies the active filters to only those 25 independently verified parcels. It never claims to search the entire county.
+On local dev, the snapshot is initially visible and labeled **VERIFIED SAMPLE**; the Find sites button still requests fresh data. In a GitHub Pages build (`GITHUB_PAGES=true npm run build`), **Find live sites** performs new browser-to-ArcGIS requests to the actual NYS tax parcel and informational wetlands layers. It uses a tiled bounding-box search rather than a single first-500 query, then recomputes NAD83/UTM18 parcel areas and submits wetlands polygon intersection requests. **Explore verified sample offline** is a separate button to view only the 25 proven parcels if public services are unavailable. Neither route claims an exhaustive county search.
 
 ## Architecture
 
-- **UI:** React, TypeScript, Vite, Leaflet; map-first satellite interface, polygon selection, assessments, and comparisons.
+- **UI:** React, TypeScript, Vite, Leaflet, proj4; map-first satellite interface, polygon selection, assessments, comparison, and browser-direct live GIS on static hosting.
 - **API:** FastAPI and Python; live NYS parcel query, geometry validation, NAD83 UTM projected acreage, geodesic radius filtering, and separate NYSDEC wetland spatial-intersection requests.
 - **Offline presentation data:** Cached, genuine GeoJSON generated only after a successful GitHub Actions real-data test.
 - **Tests:** Pytest checks for area calculations, geodesic bounds, ordering, input validation, error handling, and snapshot provenance; Playwright tests the browser workflow from project configuration through candidate selection and assessment.
@@ -80,7 +80,7 @@ npm run test:e2e
 
 ## Engineering assumptions and boundaries
 
-- **Geographic scope:** Albany County, New York, only. The live search center and radius refine the query, not the underlying county coverage. The live endpoint returns a **sampled shortlist**, not an exhaustive county-wide inventory; its bounded results may omit parcels.
+- **Geographic scope:** Albany County, New York, only. The live search center and radius refine the query, not the underlying county coverage. Browser-direct mode uses 3×3 bounded geographic tiles, at most 275 results per tile, and screens the closest 32 matching parcels for wetlands. Local FastAPI mode screens 32 candidates from up to 500 retrieved. Neither is exhaustive; limitations are disclosed.
 - **Land requirement:** Default gross-area screening heuristic of **7 acres per MW AC**. This is not an estimate of usable acreage. Parcel area is calculated from the geometry, not assumed from tax attributes.
 - **Solar power:** A display-only **DC/AC ratio of 1.3**, with no generation or system efficiency forecast.
 - **Wetlands:** Real polygon overlap with NYSDEC **informational**, non-regulatory wetlands mapping. No mapped overlap is not proof of wetland absence, and a mapped overlap does not settle permitting. A jurisdictional determination requires regulatory review.
@@ -89,7 +89,7 @@ npm run test:e2e
 
 ## Two-minute demo
 
-Begin on the satellite map with a 2 MW AC solar project. Choose a 30-mile radius; run a search or explicitly filter the verified sample in a static build. Show authentic parcel boundaries, open an assessment and explain which screening facts are known versus unknown. Export one parcel report. The pitch is **reducing the time to a defensible early shortlist**, not certifying a construction-ready site.
+Begin on the satellite map with a 2 MW AC solar project. Choose a small search radius; click **Find live sites** to query public GIS directly (or use the explicitly labeled offline verified sample as a fallback). Show authentic parcel boundaries, open an assessment and explain which screening facts are known versus unknown. Export one parcel report. The pitch is **reducing the time to a defensible early shortlist**, not certifying a construction-ready site.
 
 ---
 
