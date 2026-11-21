@@ -46,14 +46,14 @@ jobs:
               await new Promise(resolve => setTimeout(resolve, 3000));
             }
             if(status !== 200) throw new Error('Published GitHub Pages URL did not respond HTTP 200, status='+status);
-            await page.locator('.source-chip').waitFor({timeout:15000});
+            await page.locator('.candidate-row').first().waitFor({timeout:20000});
             const initial = await page.locator('.candidate-row').count();
             if(initial !== 25) throw new Error('Expected 25 real offline sample parcels, found '+initial);
             await page.locator('#radius').focus();
             await page.keyboard.press('Home');
             for(let i=0;i<7;i++) await page.keyboard.press('ArrowRight');
             await page.getByRole('button',{name:/find live sites/i}).click();
-            await page.waitForFunction(() => document.querySelector('.source-chip.live') || document.querySelector('.error-note'),{timeout:150000});
+            await page.waitForFunction(() => document.querySelector('.source-chip.live') || document.querySelector('.error-note'),null,{timeout:150000});
             if(await page.locator('.error-note').isVisible()) throw new Error('Public GIS search failed: ' + await page.locator('.error-note').innerText());
             await page.locator('.source-chip.live').waitFor({timeout:5000});
             const count = await page.locator('.candidate-row').count();
