@@ -1,0 +1,76 @@
+name: Verify public GridSeeker website and live GIS
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/public-smoke.yml'
+      - 'frontend/src/**'
+
+permissions:
+  contents: read
+
+jobs:
+  browser-public:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install frontend and browser
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Verify the real public HTTPS site without a Python server
+        run: |
+          node --input-type=module <<'JS'
+          import { chromium } from '@playwright/test';
+          const browser = await chromium.launch({headless:true});
+          const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+          page.on('pageerror', error => console.error('PAGE ERROR:', error.message));
+          page.on('console', msg => { if (msg.type()==='error') console.error('BROWSER:', msg.text()); });
+          try {
+            const url = 'https://ritwiksi.github.io/gridplanner/';
+            let status = null;
+            for (let i=0; i<10; i++) {
+              try {
+                const response = await page.goto(url,{waitUntil:'domcontentloaded',timeout:25000});
+                status = response?.status() ?? null;
+                if(status===200) break;
+              } catch (e) { console.log('Site propagation retry',i+1,String(e).slice(0,200)); }
+              await new Promise(resolve => setTimeout(resolve, 3000));
+            }
+            if(status !== 200) throw new Error('Published GitHub Pages URL did not respond HTTP 200, status='+status);
+            await page.locator('.source-chip').waitFor({timeout:15000});
+            const initial = await page.locator('.candidate-row').count();
+            if(initial !== 25) throw new Error('Expected 25 real offline sample parcels, found '+initial);
+            await page.locator('#radius').focus();
+            await page.keyboard.press('Home');
+            for(let i=0;i<7;i++) await page.keyboard.press('ArrowRight');
+            await page.getByRole('button',{name:/find live sites/i}).click();
+            await page.waitForFunction(() => document.querySelector('.source-chip.live') || document.querySelector('.error-note'),{timeout:150000});
+            if(await page.locator('.error-note').isVisible()) throw new Error('Public GIS search failed: ' + await page.locator('.error-note').innerText());
+            await page.locator('.source-chip.live').waitFor({timeout:5000});
+            const count = await page.locator('.candidate-row').count();
+            if(count<=0 || count>32) throw new Error('Invalid live-screened site count '+count);
+            await page.locator('.candidate-row').first().click();
+            await page.locator('.assessment').waitFor();
+            const report = await page.locator('.assessment').innerText();
+            if(!report.includes('Grid connection not evaluated')) throw new Error('Missing honest grid limitation');
+            await page.screenshot({path:'public-gridseeker-live.png',fullPage:true});
+            console.log('PUBLIC DEPLOYMENT VERIFIED',url,'HTTP '+status,'sample parcels '+initial,'live candidate parcels '+count);
+          } finally {
+            await browser.close();
+          }
+          JS
+      - name: Preserve actual public-site screenshot
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployed-public-gridseeker-screenshot
+          path: frontend/public-gridseeker-live.png
