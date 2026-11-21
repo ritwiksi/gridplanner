@@ -1,0 +1,254 @@
+{
+  "status": "GO",
+  "verified_at_utc": "2026-11-21T17:54:27.932371+00:00",
+  "parcel_source": "https://services6.arcgis.com/EbVsqZ18sv1kVJ3k/ArcGIS/rest/services/NYS_Tax_Parcels_Public/FeatureServer/1/query",
+  "environmental_source": "https://services6.arcgis.com/DZHaqZm9cxOD4CWM/ArcGIS/rest/services/Informational_Freshwater_Wetland_Mapping/FeatureServer/2/query",
+  "parcel_feature_layer": 1,
+  "bbox_wgs84": [
+    -74.18,
+    42.6,
+    -73.85,
+    42.78
+  ],
+  "projected_crs": "EPSG:26918",
+  "area_units": "acres",
+  "minimum_acres": 10.0,
+  "retrieved_count": 250,
+  "valid_area_filtered_count": 141,
+  "wetland_screened_count": 25,
+  "wetland_flagged_count": 4,
+  "invalid_or_incomplete_count": 0,
+  "grid_data": "NOT EVALUATED",
+  "limitations": [
+    "NYS DEC informational wetland mapping is not regulatory; overlap is a risk flag, not a jurisdictional determination.",
+    "Gross area is not estimated usable acreage or evidence of sufficient interconnection capacity.",
+    "The source is a query-limited sample, not an exhaustive county-wide site search."
+  ],
+  "candidates": [
+    {
+      "parcel_id": "3",
+      "print_key": "41.00-2-103",
+      "address": "41 Madison Ave Ext",
+      "municipality": "Albany",
+      "gross_acres": 11.872,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "4",
+      "print_key": "41.00-2-102",
+      "address": "21 Madison Ave Ext",
+      "municipality": "Albany",
+      "gross_acres": 30.2,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "6",
+      "print_key": "41.00-2-101",
+      "address": "11 Madison Ave Ext",
+      "municipality": "Albany",
+      "gross_acres": 10.024,
+      "mapped_wetland_intersections": 1,
+      "wetland_flag": true
+    },
+    {
+      "parcel_id": "20",
+      "print_key": "41.00-2-48",
+      "address": "350 Washington Ave Ext",
+      "municipality": "Albany",
+      "gross_acres": 80.133,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "183",
+      "print_key": "40.00-3-2",
+      "address": "51 Pinehurst Blvd",
+      "municipality": "Albany",
+      "gross_acres": 99.604,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "185",
+      "print_key": "40.00-3-4",
+      "address": "11 Pinehurst Blvd",
+      "municipality": "Albany",
+      "gross_acres": 69.558,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "351",
+      "print_key": "40.00-3-25",
+      "address": "30 Madison Ave Ext",
+      "municipality": "Albany",
+      "gross_acres": 24.785,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "360",
+      "print_key": "40.00-3-34",
+      "address": "172 Willow St",
+      "municipality": "Albany",
+      "gross_acres": 13.996,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "361",
+      "print_key": "40.00-3-33",
+      "address": "174 Willow St",
+      "municipality": "Albany",
+      "gross_acres": 12.463,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "363",
+      "print_key": "40.00-3-35",
+      "address": "170 Willow St",
+      "municipality": "Albany",
+      "gross_acres": 19.588,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "364",
+      "print_key": "40.00-3-3",
+      "address": "Rear 51 Pinehurst Blvd",
+      "municipality": "Albany",
+      "gross_acres": 46.962,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "367",
+      "print_key": "40.00-3-5",
+      "address": "Rear 11 Pinehurst Blvd",
+      "municipality": "Albany",
+      "gross_acres": 20.223,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "386",
+      "print_key": "40.00-3-14",
+      "address": "Rear 40 Karner Rd",
+      "municipality": "Albany",
+      "gross_acres": 17.526,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "426",
+      "print_key": "41.00-2-47",
+      "address": "9 High Dune Dr",
+      "municipality": "Albany",
+      "gross_acres": 16.49,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "453",
+      "print_key": "41.00-2-44",
+      "address": "288 Washington Ave Ext",
+      "municipality": "Albany",
+      "gross_acres": 190.641,
+      "mapped_wetland_intersections": 1,
+      "wetland_flag": true
+    },
+    {
+      "parcel_id": "605",
+      "print_key": "41.00-2-15",
+      "address": "Pine Ln",
+      "municipality": "Albany",
+      "gross_acres": 10.304,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "673",
+      "print_key": "41.00-2-20",
+      "address": "25 Columbia Circle Dr",
+      "municipality": "Albany",
+      "gross_acres": 12.996,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "819",
+      "print_key": "41.00-2-120",
+      "address": "525B Rapp Rd (N)",
+      "municipality": "Albany",
+      "gross_acres": 37.417,
+      "mapped_wetland_intersections": 1,
+      "wetland_flag": true
+    },
+    {
+      "parcel_id": "836",
+      "print_key": "41.00-2-1",
+      "address": "170 Washington Ave Ext",
+      "municipality": "Albany",
+      "gross_acres": 20.264,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "837",
+      "print_key": "41.00-2-3",
+      "address": "180 Washington Ave Ext",
+      "municipality": "Albany",
+      "gross_acres": 14.595,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "861",
+      "print_key": "41.00-2-118",
+      "address": "525 Rapp Rd (N)",
+      "municipality": "Albany",
+      "gross_acres": 81.549,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "864",
+      "print_key": "41.00-2-113",
+      "address": "495 Rapp Rd (N)",
+      "municipality": "Albany",
+      "gross_acres": 31.824,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "877",
+      "print_key": "52.2-1-26.1",
+      "address": "161 Washington Ave Ext",
+      "municipality": "Albany",
+      "gross_acres": 26.752,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "901",
+      "print_key": "41.00-2-119",
+      "address": "525A Rapp Rd (N)",
+      "municipality": "Albany",
+      "gross_acres": 22.263,
+      "mapped_wetland_intersections": 0,
+      "wetland_flag": false
+    },
+    {
+      "parcel_id": "902",
+      "print_key": "41.00-2-121",
+      "address": "525C Rapp Rd (N)",
+      "municipality": "Albany",
+      "gross_acres": 59.695,
+      "mapped_wetland_intersections": 2,
+      "wetland_flag": true
+    }
+  ]
+}
