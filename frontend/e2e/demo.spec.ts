@@ -6,7 +6,7 @@ test('real verified data: configure, screen, select, and assess a parcel', async
   await expect(page.locator('.source-chip').getByText('VERIFIED SAMPLE', { exact: true })).toBeVisible();
   await expect(page.locator('.candidate-row')).toHaveCount(25, { timeout: 20_000 });
   await page.locator('#capacity').fill('2');
-  await page.getByRole('button', { name: /screen verified sample/i }).click();
+  await page.getByRole('button', { name: /explore verified sample offline/i }).click();
   const first = page.locator('.candidate-row').first();
   await expect(first).toBeVisible();
   await first.click();
@@ -21,7 +21,7 @@ test('demo mode does not claim live availability and filters genuine parcels', a
   await page.goto('/gridplanner/');
   await expect(page.locator('.candidate-row')).toHaveCount(25, { timeout: 20_000 });
   await page.locator('#minimum').fill('2000');
-  await page.getByRole('button', { name: /screen verified sample/i }).click();
+  await page.getByRole('button', { name: /explore verified sample offline/i }).click();
   await expect(page.getByText('No parcels in this view meet the current filter.')).toBeVisible();
   await expect(page.locator('.source-chip').getByText('VERIFIED SAMPLE', { exact: true })).toBeVisible();
 });

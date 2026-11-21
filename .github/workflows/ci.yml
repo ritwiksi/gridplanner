@@ -1,7 +1,7 @@
 name: GridSeeker build and unit tests
 on:
   push:
-    branches: [feat/gridseeker-feasibility]
+    branches: [feat/gridseeker-feasibility, feat/live-pages-siting]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
 
   frontend:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: frontend
@@ -47,6 +47,7 @@ jobs:
         run: npm run test:e2e
         env:
           CI: 'true'
+          LIVE_GIS_E2E: '1'
       - name: Preserve browser screenshot and traces
         if: always()
         uses: actions/upload-artifact@v4
