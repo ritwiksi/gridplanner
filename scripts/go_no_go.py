@@ -17,14 +17,14 @@ from shapely.geometry.polygon import orient
 from shapely.ops import transform
 
 PARCELS = "https://services6.arcgis.com/EbVsqZ18sv1kVJ3k/ArcGIS/rest/services/NYS_Tax_Parcels_Public/FeatureServer/1/query"
-WETLANDS = "https://gisservices.dec.ny.gov/arcgis/rest/services/Wetlands/MapServer/0/query"
+WETLANDS = "https://services6.arcgis.com/DZHaqZm9cxOD4CWM/ArcGIS/rest/services/Informational_Freshwater_Wetland_Mapping/FeatureServer/2/query"
 # Rural/western Albany County; Albany-specific WHERE clause avoids other counties.
 BBOX = (-74.18, 42.60, -73.85, 42.78)
 ACRE_M2 = 4046.8564224
 PROJECTED_CRS = "EPSG:26918"  # NAD83 / UTM zone 18N, metres
 
 def api_get(url, params):
-    r = requests.get(url, params=params, timeout=40, headers={"User-Agent": "GridSeeker research prototype (source-attributed)"})
+    r = (requests.post(url, data=params, timeout=40, headers={"User-Agent": "GridSeeker research prototype (source-attributed)"})\n         if url == WETLANDS else requests.get(url, params=params, timeout=40, headers={"User-Agent": "GridSeeker research prototype (source-attributed)"}))
     r.raise_for_status()
     data = r.json()
     if not isinstance(data, dict) or "error" in data:
@@ -141,7 +141,7 @@ def main():
         "invalid_or_incomplete_count": skipped,
         "grid_data": "NOT EVALUATED",
         "limitations": [
-            "Wetland map overlap is preliminary; boundaries and jurisdiction require professional verification.",
+            "NYS DEC informational wetland mapping is not regulatory; overlap is a risk flag, not a jurisdictional determination.",
             "Gross area is not estimated usable acreage or evidence of sufficient interconnection capacity.",
             "The source is a query-limited sample, not an exhaustive county-wide site search.",
         ],
