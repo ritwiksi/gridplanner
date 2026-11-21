@@ -1,0 +1,43 @@
+name: GridSeeker build and unit tests
+on:
+  push:
+    branches: [feat/gridseeker-feasibility]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run deterministic and provenance tests
+        run: python -m pytest tests -q
+      - name: Verify API imports
+        run: python -c "from backend.app import app; print(app.title)"
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Type-check and bundle
+        run: npm run build
