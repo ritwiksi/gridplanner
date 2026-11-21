@@ -1,0 +1,26 @@
+name: Mandatory GIS feasibility (GO/NO-GO)
+on:
+  push:
+    branches: [feat/gridseeker-feasibility]
+  workflow_dispatch:
+
+jobs:
+  real-data-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install GIS dependencies
+        run: pip install -r requirements.txt
+      - name: Execute real parcel and wetland spatial queries
+        run: python scripts/go_no_go.py --min-acres 10 --check-count 25
+      - name: Preserve actual verification outputs
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gridseeker-real-gis-proof
+          path: outputs/
