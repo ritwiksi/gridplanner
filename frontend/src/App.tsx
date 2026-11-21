@@ -161,7 +161,7 @@ export default function App() {
     overlays.current?.remove();
     const displayed = L.geoJSON({
       type: 'FeatureCollection', features: sites,
-    }, {
+    } as FeatureCollection<Geometry, SiteProperties>, {
       style: feature => {
         const id = String(feature?.properties?.parcel_id ?? '');
         const risk = Boolean(feature?.properties?.wetland_flag);
@@ -217,7 +217,7 @@ export default function App() {
     });
     setSelectedId(null); setComparison([]); setError(''); setStarted(true);
     if (filtered.length && map.current) {
-      map.current.flyToBounds(L.geoJSON({ type: 'FeatureCollection', features: filtered }).getBounds().pad(0.15), { duration: 0.7, maxZoom: 13 });
+      map.current.flyToBounds(L.geoJSON({ type: 'FeatureCollection', features: filtered } as FeatureCollection<Geometry, SiteProperties>).getBounds().pad(0.15), { duration: 0.7, maxZoom: 13 });
     }
   }
 
